@@ -128,6 +128,9 @@ pub fn run() {
          .args(&["DUMP", "EDIT", "LIST", "SHOW", "SUMMARY", "ARGUMENTS", "EVALUATE"]))
     .get_matches();
 
+  #[cfg(windows)]
+  enable_ansi_support().ok();
+
   let color = match matches.value_of("COLOR").expect("`--color` had no value") {
     "auto"   => Color::auto(),
     "always" => Color::always(),
@@ -135,10 +138,6 @@ pub fn run() {
     other    => die!("Invalid argument `{}` to --color. This is a bug in just.", other),
   };
 
-  if color.active() {
-    #[cfg(windows)]
-    enable_ansi_support().ok();
-  }
 
   let set_count = matches.occurrences_of("SET");
   let mut overrides = Map::new();
